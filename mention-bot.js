@@ -138,7 +138,7 @@ function parseBlame(blame: string): Array<string> {
   // The way the document is structured is that commits and lines are
   // interleaved. So every time we see a commit we grab the author's name
   // and every time we see a line we log the last seen author.
-  var re = /(<img alt="@([^"]+)" class="avatar blame-commit-avatar"|<tr class="blame-line")/g;
+  var re = /(<img(?:.*)alt="@([^"]+)"|<div class="blob-code blob-code-inner js-file-line")/g;
 
   var currentAuthor = 'none';
   var lines = [];
@@ -444,11 +444,11 @@ async function getTeamMembership(
   return new Promise(function(resolve, reject) {
     github.orgs.getTeamMembership({
       id: teamData.id,
-      owner: creator
+      username: creator
     }, function(err, data) {
       if (err) {
         if (err.code === 404 &&
-                err.message === '{"message":"Not Found","documentation_url":"https://developer.github.com/v3"}') {
+                err.message === '{"message":"Not Found","documentation_url":"https://developer.github.com/v3/orgs/teams/#get-team-membership"}') {
           resolve({name: teamData.name, state: 'nonmember'});
         } else {
           reject(err);
